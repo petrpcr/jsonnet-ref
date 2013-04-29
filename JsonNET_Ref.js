@@ -39,44 +39,43 @@ if (typeof JSON.makeRef !== 'function') {
         // the object or array. [NUMBER] or [STRING] indicates a child member or
         // property.
 
-        var RefIndex       // Ref index
-
-        return (function derez(value) {
+        var RefIndex = 0;     // Ref index
+        var test = $;
+        (function derez(value) {
 
             // The derez recurses through the object, producing the deep copy.
 
-            var i          // The loop counter
-
-            var RefFactory = function (item) {
-                if (typeof item === 'object' && item !== null &&
-                    !(item instanceof Boolean) &&
-                    !(item instanceof Date) &&
-                    !(item instanceof Number) &&
-                    !(item instanceof RegExp) &&
-                    !(item instanceof String)) {
-
-                    if (!item.$ref) {
-                        if (item.$id) {
-                            item = { $ref: value[i].$id }
-                        } else {
-                            item.$id = (RefIndex++).toString();
-                            derez(item);
-                        }
-                    }
-                }
-            }
-
+            var i,          // The loop counter
+                item       
+           
             // typeof null === 'object', so go on if this value is really an object but not
             // one of the weird builtin objects.
 
             if (value && typeof value === 'object') {
-                if (Object.prototype.toString.apply(value) === '[object Array]') {
-                    for (i = 0; i < value.length; i += 1) {
-                        RefFactory(value[i]);
-                    }
-                } else {
+                    if (Object.prototype.toString.apply(value) === '[object Array]') {
+                        for (i = 0; i < value.length; i += 1) {
+                            derez(value[i]);
+                        }
+                } else {                        
                     for (name in value) {
-                        RefFactory(value[name]);
+                        item = value[name];
+                        if (typeof item === 'object' && item !== null &&
+                        !(item instanceof Boolean) &&
+                        !(item instanceof Date) &&
+                        !(item instanceof Number) &&
+                        !(item instanceof RegExp) &&
+                        !(item instanceof String)) {
+                            if (!item.$id) {
+                                RefIndex++;
+                                value.$id = RefIndex.toString();
+                            }
+                            if (item.$id) {
+                                value[name] = {$ref: item.$id}
+                            } else {                                
+                                derez(item);
+                            }
+                            
+                        }
 
                     }
 

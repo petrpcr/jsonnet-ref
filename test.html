@@ -1,0 +1,18 @@
+<html>
+    <script type="text/javascript" src="JsonNET_Ref.js"></script>
+   
+    <body>
+        <div id="S1"></div>
+        <div>Zpetne</div>
+        <div id="S2"></div>
+    </body>
+     <script type="text/javascript">
+         var VAR1 = { $id: "1", Name: "One", items: [{ owner: { $ref: "1" }, Position: 1, Name: "One", Type: { $id: "2", Information: "This is information" } }, { owner: { $ref: "1" }, Position: 2, Name: "Two", Type: { $ref: "2" } }] }
+         var VARS1 = JSON.stringify(VAR1);
+         var VAR2 = JSON.replaceRef(VAR1);
+         var VAR3 = JSON.makeRef(VAR2);
+         var VARS3 = JSON.stringify(VAR3);
+         document.getElementById("S1").innerHTML = VARS1;
+         document.getElementById("S2").innerHTML = VARS3;
+     </script>
+</html>
